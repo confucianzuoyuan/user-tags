@@ -73,7 +73,7 @@ public class LineChartEtl {
         }
 
         // 近七天之前的流水总和
-        String gmvTotal = "select sum(origin_price) as totalGmv from i_order.t_order where create_time <'%s'";
+        String gmvTotal = "select sum(origin_price) as totalGmv from usertags.t_order where create_time <'%s'";
         gmvTotal = String.format(gmvTotal, DateUtil.DateToString(sevenDayBefore, DateStyle.YYYY_MM_DD_HH_MM_SS));
         Dataset<Row> gmvDs = session.sql(gmvTotal);
         double gmvAll = gmvDs.collectAsList().get(0).getDouble(0);

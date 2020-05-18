@@ -18,6 +18,7 @@ public class HotWordEtl {
         JavaSparkContext jsc = new JavaSparkContext(conf);
         JavaRDD<String> linesRdd = jsc.textFile("hdfs://localhost:8020/SogouQ.sample.txt");
 
+        // 相当于 MapReduce 里的 Map 操作
         JavaPairRDD<String, Integer> pairRDD = linesRdd.mapToPair(new PairFunction<String, String, Integer>() {
             // string -- (string,integer)
             @Override
@@ -27,7 +28,7 @@ public class HotWordEtl {
             }
         });
 
-
+        // 相当于 MapReduce 里的 Reduce 操作
         JavaPairRDD<String, Integer> resultRdd = pairRDD.reduceByKey(new Function2<Integer, Integer, Integer>() {
             @Override
             public Integer call(Integer v1, Integer v2) throws Exception {
@@ -43,6 +44,7 @@ public class HotWordEtl {
 //            System.out.println(tuple2._1 + "===" + tuple2._2);
 //        }
 
+        // 将元组的元素翻转：(hello, 10) => (10, hello)
         JavaPairRDD<Integer, String> swapRdd = resultRdd.mapToPair(new PairFunction<Tuple2<String, Integer>, Integer, String>() {
             @Override
             public Tuple2<Integer, String> call(Tuple2<String, Integer> stringIntegerTuple2) throws Exception {
